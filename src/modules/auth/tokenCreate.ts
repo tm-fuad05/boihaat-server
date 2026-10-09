@@ -7,7 +7,7 @@ export const cookieOptions: CookieOptions = {
   secure: process.env.NODE_ENV === "production",
   sameSite: "none",
   path: "/",
-  maxAge: 3600 * 24 * 7 * 1000,
+  maxAge: 3600 * 24 * 1000,
 };
 
 export default function tokenCreate(payload: Payload, res: Response) {

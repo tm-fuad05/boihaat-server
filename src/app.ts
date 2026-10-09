@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import authRouter from "./modules/auth/auth.routes";
 import { verifyToken } from "./middlewares/auth.middleware";
+import userRouter from "./modules/users/user.routes";
 
 export const app: Express = express();
 
@@ -14,6 +15,7 @@ app.use(cookieParser());
 
 // Routers
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users", userRouter);
 
 app.get("/", verifyToken, (_, res: Response) => {
   res.send({
