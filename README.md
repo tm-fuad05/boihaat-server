@@ -48,6 +48,10 @@ Clean domain-driven modular structure for high maintainability.
 | :--- | :---: | :--- | :---: | :--- |
 | **Auth** | `POST` | `/api/v1/auth/register` | Public | Register a new user |
 | | `POST` | `/api/v1/auth/login` | Public | Authenticate & issue token |
+| **Users** | `GET` | `/api/v1/users` | Admin | Get all registered users |
+| | `GET` | `/api/v1/users/:id` | Admin | Get user by ID |
+| | `PATCH`| `/api/v1/users/role/:id` | Admin | Change user role (`USER` / `ADMIN`) |
+| | `DELETE`| `/api/v1/users/:id` | Admin | Remove user account |
 | **Books** | `GET` | `/api/v1/books` | Public | Search, filter & paginate books |
 | | `GET` | `/api/v1/books/:id` | Public | View book details |
 | | `POST` | `/api/v1/books` | Admin | Create book entry |
