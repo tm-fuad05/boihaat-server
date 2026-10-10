@@ -5,7 +5,7 @@ import {
   editCategory,
   getAllCategories,
   getCategoryById,
-} from "./category.controllers";
+} from "./category.controller";
 import { verifyToken } from "../../middlewares/auth.middleware";
 import { verifyAdmin } from "../../middlewares/role.middleware";
 import { validateRequest } from "../../middlewares/validationRequest";

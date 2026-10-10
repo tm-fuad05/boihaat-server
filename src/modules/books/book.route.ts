@@ -7,7 +7,7 @@ import {
   editBook,
   getAllBooks,
   getBookById,
-} from "./book.controllers";
+} from "./book.controller";
 import { validateRequest } from "../../middlewares/validationRequest";
 import { createBookSchema, updateBookSchema } from "./book.validation";
 
