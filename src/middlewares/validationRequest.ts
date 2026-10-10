@@ -11,11 +11,7 @@ export const validateRequest = (schema: ZodSchema) => {
       if (error instanceof ZodError) {
         return res.status(400).json({
           success: false,
-          message: "Validation Error",
-          errors: error.issues.map((err) => ({
-            field: err.path.join("."),
-            message: err.message,
-          })),
+          message: `Bad Request. ${error?.issues[0]?.message}`,
         });
       }
       next(error);

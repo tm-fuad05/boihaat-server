@@ -69,13 +69,6 @@ export async function addBook(req: Request, res: Response) {
   try {
     const { title, price, stock, categoryId } = req.body;
 
-    if (!title || !price || !stock || !categoryId) {
-      return res.status(400).json({
-        success: false,
-        message: "Bad Request. Title, price, stock & CategoryId are required!",
-      });
-    }
-
     const addNewBook = await prisma.book.create({
       data: {
         title,
@@ -130,13 +123,6 @@ export async function editBook(req: Request, res: Response) {
     }
 
     const { title, price, stock, categoryId } = req.body;
-
-    if (!title && !price && !stock && !categoryId) {
-      return res.status(400).json({
-        success: false,
-        message: "Bad Request. Title, price, stock or categoryId is required!",
-      });
-    }
 
     const updatedDoc = await prisma.book.update({
       where: {
