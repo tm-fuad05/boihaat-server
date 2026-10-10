@@ -1,4 +1,4 @@
-import express, { response, type Request, type Response } from "express";
+import type { Request, Response } from "express";
 import { prisma } from "../../config/prisma";
 
 // GET all categories
@@ -67,12 +67,6 @@ export async function getCategoryById(req: Request, res: Response) {
 export async function addCategory(req: Request, res: Response) {
   try {
     const { name, slug } = req.body;
-    if (!name || !slug) {
-      return res.status(400).json({
-        success: false,
-        message: "Bad Request. Name and slug are required!",
-      });
-    }
 
     const existingCategory = await prisma.category.findUnique({
       where: {
@@ -104,16 +98,10 @@ export async function addCategory(req: Request, res: Response) {
   }
 }
 
+// Edit Category
 export async function editCategory(req: Request, res: Response) {
   try {
     const categoryId = req.params.id;
-
-    if (!categoryId) {
-      return res.status(404).json({
-        success: false,
-        message: "Category ID not found!",
-      });
-    }
 
     const existingCategory = await prisma.category.findUnique({
       where: { id: categoryId as string },
@@ -127,13 +115,6 @@ export async function editCategory(req: Request, res: Response) {
     }
 
     const { name, slug } = req.body;
-
-    if (!name && !slug) {
-      return res.status(400).json({
-        success: false,
-        message: "Bad Request. Name or slug are required!",
-      });
-    }
 
     const updatedDoc = await prisma.category.update({
       where: {
@@ -159,6 +140,7 @@ export async function editCategory(req: Request, res: Response) {
   }
 }
 
+// Delete Category
 export async function deleteCategory(req: Request, res: Response) {
   try {
     const categoryId = req.params.id;
