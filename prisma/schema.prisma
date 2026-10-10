@@ -83,7 +83,7 @@ model Book {
   updatedAt DateTime @updatedAt
 
   categoryId String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   orderItems OrderItem[]
 
