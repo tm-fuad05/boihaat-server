@@ -126,9 +126,9 @@ export async function editCategory(req: Request, res: Response) {
       });
     }
 
-    const updatedCategory = req.body;
+    const { name, slug } = req.body;
 
-    if (!updatedCategory) {
+    if (!name && !slug) {
       return res.status(400).json({
         success: false,
         message: "Bad Request. Name or slug are required!",
@@ -140,8 +140,8 @@ export async function editCategory(req: Request, res: Response) {
         id: categoryId as string,
       },
       data: {
-        name: updatedCategory.name,
-        slug: updatedCategory.slug,
+        name,
+        slug,
       },
     });
 
