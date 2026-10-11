@@ -27,8 +27,10 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   orders    Order[]
   profile   Profile?
+  cartItems CartItem[]
 
   @@map("users")
 }
@@ -87,7 +89,25 @@ model Book {
 
   orderItems OrderItem[]
 
+  cartItems CartItem[]
+
   @@map("books")
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookId])
+  @@map("cart_items")
 }
 
 model OrderItem {
@@ -103,5 +123,6 @@ model OrderItem {
   bookId String
   book   Book   @relation(fields: [bookId], references: [id], onDelete: Restrict)
 
+  @@unique([orderId, bookId])
   @@map("order_items")
 }
