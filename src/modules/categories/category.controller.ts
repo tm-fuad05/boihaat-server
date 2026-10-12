@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import { prisma } from "../../config/prisma";
 import { CategoryService } from "./category.service";
 
 // GET all categories
@@ -32,14 +31,9 @@ export async function getCategoryById(req: Request, res: Response) {
       });
     }
 
-    const category = await prisma.category.findUnique({
-      where: {
-        id: categoryId as string,
-      },
-      include: {
-        books: true,
-      },
-    });
+    const category = await CategoryService.getCategoryByIdFromDB(
+      categoryId as string,
+    );
     if (!category) {
       return res.status(404).json({
         success: false,
@@ -65,11 +59,8 @@ export async function addCategory(req: Request, res: Response) {
   try {
     const { name, slug } = req.body;
 
-    const existingCategory = await prisma.category.findUnique({
-      where: {
-        slug,
-      },
-    });
+    const existingCategory =
+      await CategoryService.getCategoryBySlugFromDB(slug);
 
     if (existingCategory) {
       return res.status(409).json({
@@ -78,8 +69,9 @@ export async function addCategory(req: Request, res: Response) {
       });
     }
 
-    const createNewCategory = await prisma.category.create({
-      data: { name, slug },
+    const createNewCategory = await CategoryService.addCategoryInDB({
+      name,
+      slug,
     });
 
     res.status(201).json({
@@ -100,9 +92,9 @@ export async function editCategory(req: Request, res: Response) {
   try {
     const categoryId = req.params.id;
 
-    const existingCategory = await prisma.category.findUnique({
-      where: { id: categoryId as string },
-    });
+    const existingCategory = await CategoryService.getCategoryByIdFromDB(
+      categoryId as string,
+    );
 
     if (!existingCategory) {
       return res.status(404).json({
@@ -113,15 +105,10 @@ export async function editCategory(req: Request, res: Response) {
 
     const { name, slug } = req.body;
 
-    const updatedDoc = await prisma.category.update({
-      where: {
-        id: categoryId as string,
-      },
-      data: {
-        name,
-        slug,
-      },
-    });
+    const updatedDoc = await CategoryService.editCategoryFromDB(
+      { name, slug },
+      categoryId as string,
+    );
 
     res.status(200).json({
       success: true,
@@ -148,9 +135,9 @@ export async function deleteCategory(req: Request, res: Response) {
       });
     }
 
-    const existingCategory = await prisma.category.findUnique({
-      where: { id: categoryId as string },
-    });
+    const existingCategory = await CategoryService.getCategoryByIdFromDB(
+      categoryId as string,
+    );
 
     if (!existingCategory) {
       return res.status(404).json({
@@ -159,9 +146,9 @@ export async function deleteCategory(req: Request, res: Response) {
       });
     }
 
-    const deletedCategory = await prisma.category.delete({
-      where: { id: categoryId as string },
-    });
+    const deletedCategory = await CategoryService.deleteCategoryFromDB(
+      categoryId as string,
+    );
 
     res.status(200).json({
       success: true,

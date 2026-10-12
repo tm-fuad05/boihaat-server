@@ -9,6 +9,62 @@ async function getCategoriesFromDB() {
   return categories;
 }
 
+async function getCategoryByIdFromDB(categoryId: string) {
+  const category = await prisma.category.findUnique({
+    where: {
+      id: categoryId as string,
+    },
+    include: {
+      books: true,
+    },
+  });
+  return category;
+}
+
+async function getCategoryBySlugFromDB(slug: string) {
+  const existingCategory = await prisma.category.findUnique({
+    where: {
+      slug,
+    },
+  });
+  return existingCategory;
+}
+
+interface CategoryInput {
+  name: string;
+  slug: string;
+}
+
+async function addCategoryInDB(payload: CategoryInput) {
+  const createNewCategory = await prisma.category.create({
+    data: payload,
+  });
+  return createNewCategory;
+}
+
+async function editCategoryFromDB(payload: CategoryInput, categoryId: string) {
+  const updatedDoc = await prisma.category.update({
+    where: {
+      id: categoryId as string,
+    },
+    data: payload,
+  });
+  return updatedDoc;
+}
+
+async function deleteCategoryFromDB(categoryId: string) {
+  const deletedCategory = await prisma.category.delete({
+    where: { id: categoryId as string },
+  });
+
+  return deletedCategory;
+}
+
 export const CategoryService = {
   getCategoriesFromDB,
+  getCategoryByIdFromDB,
+  getCategoryBySlugFromDB,
+  addCategoryInDB,
+  editCategoryFromDB,
+  deleteCategoryFromDB,
 };

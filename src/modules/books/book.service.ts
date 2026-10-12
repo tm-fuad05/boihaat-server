@@ -22,14 +22,14 @@ async function getBookByIdFromDB(bookId: string) {
   return book;
 }
 
-interface createBookInput {
+interface BookInput {
   title: string;
   price: number;
   stock: number;
   categoryId: string;
 }
 
-async function addBookInDB(payload: createBookInput) {
+async function addBookInDB(payload: BookInput) {
   const addNewBook = await prisma.book.create({
     data: payload,
     include: {
@@ -43,7 +43,7 @@ async function addBookInDB(payload: createBookInput) {
   return addNewBook;
 }
 
-async function editBookInDB(payload: createBookInput, bookId: string) {
+async function editBookInDB(payload: BookInput, bookId: string) {
   const updatedDoc = await prisma.book.update({
     where: {
       id: bookId as string,
