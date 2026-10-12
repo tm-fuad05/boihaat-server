@@ -1,14 +1,10 @@
 import type { Request, Response } from "express";
-import { prisma } from "../../config/prisma";
+import { BookService } from "./book.service";
 
 // GET All books
 export async function getAllBooks(req: Request, res: Response) {
   try {
-    const books = await prisma.book.findMany({
-      include: {
-        category: true,
-      },
-    });
+    const books = await BookService.getBooksFromDB();
 
     res.status(200).json({
       success: true,
@@ -35,14 +31,7 @@ export async function getBookById(req: Request, res: Response) {
       });
     }
 
-    const book = await prisma.book.findUnique({
-      where: {
-        id: bookId as string,
-      },
-      include: {
-        category: true,
-      },
-    });
+    const book = await BookService.getBookByIdFromDB(bookId as string);
 
     if (!book) {
       return res.status(404).json({
@@ -69,20 +58,11 @@ export async function addBook(req: Request, res: Response) {
   try {
     const { title, price, stock, categoryId } = req.body;
 
-    const addNewBook = await prisma.book.create({
-      data: {
-        title,
-        price,
-        stock,
-        categoryId,
-      },
-      include: {
-        category: {
-          select: {
-            name: true,
-          },
-        },
-      },
+    const addNewBook = await BookService.addBookInDB({
+      title,
+      price,
+      stock,
+      categoryId,
     });
 
     res.status(201).json({
@@ -111,9 +91,7 @@ export async function editBook(req: Request, res: Response) {
       });
     }
 
-    const existingBook = await prisma.book.findUnique({
-      where: { id: bookId as string },
-    });
+    const existingBook = await BookService.getBookByIdFromDB(bookId as string);
 
     if (!existingBook) {
       return res.status(404).json({
@@ -124,24 +102,10 @@ export async function editBook(req: Request, res: Response) {
 
     const { title, price, stock, categoryId } = req.body;
 
-    const updatedDoc = await prisma.book.update({
-      where: {
-        id: bookId as string,
-      },
-      data: {
-        title,
-        price,
-        stock,
-        categoryId,
-      },
-      include: {
-        category: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
+    const updatedDoc = await BookService.editBookInDB(
+      { title, price, stock, categoryId },
+      bookId as string,
+    );
 
     res.status(200).json({
       success: true,
@@ -169,9 +133,7 @@ export async function deleteBook(req: Request, res: Response) {
       });
     }
 
-    const existingBook = await prisma.book.findUnique({
-      where: { id: bookId as string },
-    });
+    const existingBook = await BookService.getBookByIdFromDB(bookId as string);
 
     if (!existingBook) {
       return res.status(404).json({
@@ -180,11 +142,7 @@ export async function deleteBook(req: Request, res: Response) {
       });
     }
 
-    const deletedBook = await prisma.book.delete({
-      where: {
-        id: bookId as string,
-      },
-    });
+    const deletedBook = await BookService.deleteBookFromDB(bookId as string);
 
     res.status(200).json({
       success: true,
@@ -198,3 +156,11 @@ export async function deleteBook(req: Request, res: Response) {
     });
   }
 }
+
+export const BookController = {
+  addBook,
+  deleteBook,
+  editBook,
+  getAllBooks,
+  getBookById,
+};

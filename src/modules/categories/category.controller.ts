@@ -1,14 +1,11 @@
 import type { Request, Response } from "express";
 import { prisma } from "../../config/prisma";
+import { CategoryService } from "./category.service";
 
 // GET all categories
 export async function getAllCategories(req: Request, res: Response) {
   try {
-    const categories = await prisma.category.findMany({
-      include: {
-        books: true,
-      },
-    });
+    const categories = await CategoryService.getCategoriesFromDB();
 
     res.status(200).json({
       success: true,

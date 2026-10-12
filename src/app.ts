@@ -3,10 +3,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import { verifyToken } from "./middlewares/auth.middleware";
-import authRouter from "./modules/auth/auth.routes";
-import userRouter from "./modules/users/user.routes";
-import categoryRouter from "./modules/categories/category.routes";
-import bookRouter from "./modules/books/book.routes";
+import { AuthRouter } from "./modules/auth/auth.route";
+import { UserRouter } from "./modules/users/user.route";
+import { CategoryRouter } from "./modules/categories/category.route";
+import { BookRouter } from "./modules/books/book.route";
 
 export const app: Express = express();
 
@@ -16,10 +16,10 @@ app.use(cors());
 app.use(cookieParser());
 
 // Routers
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/categories", categoryRouter);
-app.use("/api/v1/books", bookRouter);
+app.use("/api/v1/auth", AuthRouter);
+app.use("/api/v1/users", UserRouter);
+app.use("/api/v1/categories", CategoryRouter);
+app.use("/api/v1/books", BookRouter);
 
 app.get("/", verifyToken, (_, res: Response) => {
   res.send({

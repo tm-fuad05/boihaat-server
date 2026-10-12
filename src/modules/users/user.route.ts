@@ -14,4 +14,4 @@ router.get("/:id", verifyToken, verifyAdmin, getUserById);
 router.delete("/:id", verifyToken, verifyAdmin, deleteUser);
 router.patch("/role/:id", verifyToken, verifyAdmin, changeUserRole);
 
-export default router;
+export const UserRouter = router;

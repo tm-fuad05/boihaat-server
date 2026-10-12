@@ -1,34 +1,28 @@
 import express from "express";
 import { verifyToken } from "../../middlewares/auth.middleware";
 import { verifyAdmin } from "../../middlewares/role.middleware";
-import {
-  addBook,
-  deleteBook,
-  editBook,
-  getAllBooks,
-  getBookById,
-} from "./book.controller";
+import { BookController } from "./book.controller";
 import { validateRequest } from "../../middlewares/validationRequest";
-import { createBookSchema, updateBookSchema } from "./book.validation";
+import { BookValidation } from "./book.validation";
 
 const router = express.Router();
 
-router.get("/", getAllBooks);
+router.get("/", BookController.getAllBooks);
 router.post(
   "/",
   verifyToken,
   verifyAdmin,
-  validateRequest(createBookSchema),
-  addBook,
+  validateRequest(BookValidation.createBookSchema),
+  BookController.addBook,
 );
-router.get("/:id", getBookById);
+router.get("/:id", BookController.getBookById);
 router.patch(
   "/:id",
   verifyToken,
   verifyAdmin,
-  validateRequest(updateBookSchema),
-  editBook,
+  validateRequest(BookValidation.updateBookSchema),
+  BookController.editBook,
 );
-router.delete("/:id", verifyToken, verifyAdmin, deleteBook);
+router.delete("/:id", verifyToken, verifyAdmin, BookController.deleteBook);
 
-export default router;
+export const BookRouter = router;
