@@ -1,7 +1,5 @@
 import { type Request, type Response } from "express";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { prisma } from "../../config/prisma";
 import tokenCreate, { cookieOptions } from "./tokenCreate";
 import { UserService } from "../users/user.service";
 import { AuthService } from "./auth.service";
