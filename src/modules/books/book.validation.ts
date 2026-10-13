@@ -11,7 +11,7 @@ const createBookSchema = z.object({
   stock: z.coerce
     .number({ error: "Stock is required" })
     .nonnegative({ error: "Stock must be a non-negative number" }),
-  categoryId: z.uuid({
+  categoryId: z.string({ error: "CategoryId is required" }).uuid({
     error: "Invalid Category ID format! Must be a valid UUID",
   }),
 });
