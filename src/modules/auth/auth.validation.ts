@@ -2,19 +2,17 @@ import z from "zod";
 
 const registerSchema = z.object({
   name: z
-    .string()
+    .string({ error: "Name is required" })
     .trim()
-    .min(1, { error: "Name is required" })
     .min(3, { error: "Name must be at least 3 characters" }),
   email: z
     .email({ error: "Please enter a valid email address" })
     .trim()
     .toLowerCase(),
   password: z
-    .string()
-    .min(1, { error: "Password is required" })
+    .string({ error: "Password is required" })
     .min(6, { error: "Password must be at least 6 characters" })
-    .max(20)
+    .max(100)
     .regex(/[A-Z]/, {
       error: "Password must contain at least one uppercase letter",
     })
@@ -26,7 +24,7 @@ const registerSchema = z.object({
 
 const loginSchema = z.object({
   email: z.email({ error: "Invalid email" }).trim().toLowerCase(),
-  password: z.string().min(1, { error: "Password is required" }),
+  password: z.string({ error: "Password is required" }),
 });
 
 export const AuthValidation = {

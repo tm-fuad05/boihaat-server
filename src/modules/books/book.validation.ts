@@ -1,18 +1,19 @@
 import z from "zod";
 
 const createBookSchema = z.object({
-  title: z.string().trim().min(1, "Title is required"),
+  title: z
+    .string({ error: "Title is required" })
+    .trim()
+    .min(2, "Title must be at least 2 characters"),
   price: z.coerce
-    .number({ error: "Price is required!" })
-    .positive("Price must be a positive number and can't be zero!"),
+    .number({ error: "Price is required" })
+    .positive("Price must be a positive number and can't be zero"),
   stock: z.coerce
-    .number({ error: "Stock is required!" })
-    .nonnegative({ error: "Stock must be a non-negative number!" }),
-  categoryId: z
-    .uuid({
-      error: "Invalid Category ID format! Must be a valid UUID.",
-    })
-    .min(1, { error: "Category ID is required" }),
+    .number({ error: "Stock is required" })
+    .nonnegative({ error: "Stock must be a non-negative number" }),
+  categoryId: z.uuid({
+    error: "Invalid Category ID format! Must be a valid UUID",
+  }),
 });
 
 const updateBookSchema = createBookSchema.partial();
