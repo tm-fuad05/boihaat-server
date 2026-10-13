@@ -3,8 +3,10 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { prisma } from "../../config/prisma";
 import tokenCreate, { cookieOptions } from "./tokenCreate";
+import { UserService } from "../users/user.service";
+import { AuthService } from "./auth.service";
 
-export async function register(req: Request, res: Response) {
+async function register(req: Request, res: Response) {
   try {
     const { name, email, password } = req.body;
 
@@ -15,7 +17,7 @@ export async function register(req: Request, res: Response) {
       });
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await UserService.getUserByEmailFromDB(email);
 
     if (existingUser) {
       return res.status(409).json({
@@ -24,15 +26,7 @@ export async function register(req: Request, res: Response) {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
+    const newUser = await AuthService.registerUser({ name, email, password });
 
     tokenCreate({ id: newUser.id, name, email, role: newUser.role }, res);
 
@@ -49,7 +43,7 @@ export async function register(req: Request, res: Response) {
   }
 }
 
-export async function login(req: Request, res: Response) {
+async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
 
@@ -60,7 +54,7 @@ export async function login(req: Request, res: Response) {
       });
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await UserService.getUserByEmailFromDB(email);
 
     if (!existingUser) {
       return res.status(401).json({
@@ -101,7 +95,7 @@ export async function login(req: Request, res: Response) {
   }
 }
 
-export async function logout(req: Request, res: Response) {
+async function logout(req: Request, res: Response) {
   try {
     return res.clearCookie("token", cookieOptions).status(200).json({
       success: true,
@@ -115,3 +109,9 @@ export async function logout(req: Request, res: Response) {
     });
   }
 }
+
+export const AuthController = {
+  register,
+  login,
+  logout,
+};

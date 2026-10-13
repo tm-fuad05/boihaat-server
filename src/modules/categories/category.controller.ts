@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { CategoryService } from "./category.service";
 
 // GET all categories
-export async function getAllCategories(req: Request, res: Response) {
+async function getAllCategories(req: Request, res: Response) {
   try {
     const categories = await CategoryService.getCategoriesFromDB();
 
@@ -20,7 +20,7 @@ export async function getAllCategories(req: Request, res: Response) {
 }
 
 // GET Specific Categories
-export async function getCategoryById(req: Request, res: Response) {
+async function getCategoryById(req: Request, res: Response) {
   try {
     const categoryId = req.params.id;
 
@@ -55,7 +55,7 @@ export async function getCategoryById(req: Request, res: Response) {
 }
 
 // Post Category
-export async function addCategory(req: Request, res: Response) {
+async function addCategory(req: Request, res: Response) {
   try {
     const { name, slug } = req.body;
 
@@ -88,7 +88,7 @@ export async function addCategory(req: Request, res: Response) {
 }
 
 // Edit Category
-export async function editCategory(req: Request, res: Response) {
+async function editCategory(req: Request, res: Response) {
   try {
     const categoryId = req.params.id;
 
@@ -99,7 +99,7 @@ export async function editCategory(req: Request, res: Response) {
     if (!existingCategory) {
       return res.status(404).json({
         success: false,
-        message: "Categroy not found!",
+        message: "Category not found!",
       });
     }
 
@@ -125,7 +125,7 @@ export async function editCategory(req: Request, res: Response) {
 }
 
 // Delete Category
-export async function deleteCategory(req: Request, res: Response) {
+async function deleteCategory(req: Request, res: Response) {
   try {
     const categoryId = req.params.id;
     if (!categoryId) {
@@ -142,7 +142,7 @@ export async function deleteCategory(req: Request, res: Response) {
     if (!existingCategory) {
       return res.status(404).json({
         success: false,
-        message: "Categroy not found!",
+        message: "Category not found!",
       });
     }
 
@@ -162,3 +162,11 @@ export async function deleteCategory(req: Request, res: Response) {
     });
   }
 }
+
+export const CategoryController = {
+  getAllCategories,
+  getCategoryById,
+  addCategory,
+  editCategory,
+  deleteCategory,
+};

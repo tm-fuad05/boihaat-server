@@ -1,21 +1,10 @@
 import type { Request, Response } from "express";
-import { prisma } from "../../config/prisma";
+import { UserService } from "./user.service";
 
 // All Users get
-export async function getAllUsers(req: Request, res: Response) {
+async function getAllUsers(req: Request, res: Response) {
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        orders: true,
-        profile: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const users = await UserService.getUsersFromDB();
 
     res.status(200).json({
       success: true,
@@ -31,7 +20,7 @@ export async function getAllUsers(req: Request, res: Response) {
 }
 
 // Specific user get by ID
-export async function getUserById(req: Request, res: Response) {
+async function getUserById(req: Request, res: Response) {
   try {
     const userId = req.params.id;
 
@@ -42,21 +31,7 @@ export async function getUserById(req: Request, res: Response) {
       });
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId as string,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        orders: true,
-        profile: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const user = await UserService.getUserByIdFromDB(userId as string);
 
     if (!user) {
       return res.status(404).json({
@@ -79,7 +54,7 @@ export async function getUserById(req: Request, res: Response) {
 }
 
 // Delete user by ID
-export async function deleteUser(req: Request, res: Response) {
+async function deleteUser(req: Request, res: Response) {
   try {
     const userId = req.params.id;
 
@@ -97,11 +72,16 @@ export async function deleteUser(req: Request, res: Response) {
       });
     }
 
-    const deletedUser = await prisma.user.delete({
-      where: {
-        id: userId as string,
-      },
-    });
+    const existingUser = await UserService.getUserByIdFromDB(userId as string);
+
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+
+    const deletedUser = await UserService.deleteUserFromDB(userId as string);
 
     res.status(200).json({
       success: true,
@@ -117,7 +97,7 @@ export async function deleteUser(req: Request, res: Response) {
 }
 
 // User Role change
-export async function changeUserRole(req: Request, res: Response) {
+async function changeUserRole(req: Request, res: Response) {
   try {
     const userId = req.params.id;
     const { role } = req.body;
@@ -145,14 +125,19 @@ export async function changeUserRole(req: Request, res: Response) {
       });
     }
 
-    const updatedUser = await prisma.user.update({
-      where: {
-        id: userId as string,
-      },
-      data: {
-        role: role,
-      },
-    });
+    const existingUser = await UserService.getUserByIdFromDB(userId as string);
+
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+
+    const updatedUser = await UserService.changeUserRoleFromDB(
+      userId as string,
+      role,
+    );
 
     res.status(200).json({
       success: true,
@@ -166,3 +151,10 @@ export async function changeUserRole(req: Request, res: Response) {
     });
   }
 }
+
+export const UserController = {
+  getAllUsers,
+  getUserById,
+  deleteUser,
+  changeUserRole,
+};

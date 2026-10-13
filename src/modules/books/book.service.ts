@@ -13,7 +13,7 @@ async function getBooksFromDB() {
 async function getBookByIdFromDB(bookId: string) {
   const book = await prisma.book.findUnique({
     where: {
-      id: bookId as string,
+      id: bookId,
     },
     include: {
       category: true,
@@ -43,10 +43,10 @@ async function addBookInDB(payload: BookInput) {
   return addNewBook;
 }
 
-async function editBookInDB(payload: BookInput, bookId: string) {
+async function editBookInDB(payload: Partial<BookInput>, bookId: string) {
   const updatedDoc = await prisma.book.update({
     where: {
-      id: bookId as string,
+      id: bookId,
     },
     data: payload,
     include: {
@@ -64,7 +64,7 @@ async function editBookInDB(payload: BookInput, bookId: string) {
 async function deleteBookFromDB(bookId: string) {
   const deletedBook = await prisma.book.delete({
     where: {
-      id: bookId as string,
+      id: bookId,
     },
   });
   return deletedBook;

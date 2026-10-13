@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const createBookSchema = z.object({
+const createBookSchema = z.object({
   title: z.string({ message: "Title is required" }).trim().min(1),
   price: z.coerce
     .number({ message: "Price is required!" })
@@ -13,4 +13,9 @@ export const createBookSchema = z.object({
     .uuid("Invalid Category ID format! Must be a valid UUID."),
 });
 
-export const updateBookSchema = createBookSchema.partial();
+const updateBookSchema = createBookSchema.partial();
+
+export const BookValidation = {
+  createBookSchema,
+  updateBookSchema,
+};

@@ -1,6 +1,12 @@
 import jwt from "jsonwebtoken";
 import type { CookieOptions, Response } from "express";
-import type { Payload } from "../../types/payload.types";
+
+interface Payload {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
 
 export const cookieOptions: CookieOptions = {
   httpOnly: true,

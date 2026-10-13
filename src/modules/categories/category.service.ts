@@ -12,7 +12,7 @@ async function getCategoriesFromDB() {
 async function getCategoryByIdFromDB(categoryId: string) {
   const category = await prisma.category.findUnique({
     where: {
-      id: categoryId as string,
+      id: categoryId,
     },
     include: {
       books: true,
@@ -42,10 +42,13 @@ async function addCategoryInDB(payload: CategoryInput) {
   return createNewCategory;
 }
 
-async function editCategoryFromDB(payload: CategoryInput, categoryId: string) {
+async function editCategoryFromDB(
+  payload: Partial<CategoryInput>,
+  categoryId: string,
+) {
   const updatedDoc = await prisma.category.update({
     where: {
-      id: categoryId as string,
+      id: categoryId,
     },
     data: payload,
   });
@@ -54,7 +57,7 @@ async function editCategoryFromDB(payload: CategoryInput, categoryId: string) {
 
 async function deleteCategoryFromDB(categoryId: string) {
   const deletedCategory = await prisma.category.delete({
-    where: { id: categoryId as string },
+    where: { id: categoryId },
   });
 
   return deletedCategory;
